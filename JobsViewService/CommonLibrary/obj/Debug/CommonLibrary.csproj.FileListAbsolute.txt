@@ -8,3 +8,13 @@ D:\FU\Cloud\ProjectFinal\JobsViewService\CommonLibrary\bin\Debug\EntityFramework
 D:\FU\Cloud\ProjectFinal\JobsViewService\CommonLibrary\obj\Debug\CommonLibrary.csprojResolveAssemblyReference.cache
 D:\FU\Cloud\ProjectFinal\JobsViewService\CommonLibrary\obj\Debug\CommonLibrary.dll
 D:\FU\Cloud\ProjectFinal\JobsViewService\CommonLibrary\obj\Debug\CommonLibrary.pdb
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\bin\Debug\CommonLibrary.dll.config
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\bin\Debug\CommonLibrary.dll
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\bin\Debug\CommonLibrary.pdb
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\bin\Debug\EntityFramework.dll
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\bin\Debug\EntityFramework.xml
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\obj\Debug\CommonLibrary.csprojResolveAssemblyReference.cache
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\obj\Debug\CommonLibrary.dll
+C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\CommonLibrary\obj\Debug\CommonLibrary.pdb

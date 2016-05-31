@@ -25,7 +25,7 @@
     </Endpoints>
     <Contents>
       <Content destination=".\">
-        <SourceDirectory path="D:\FU\Cloud\ProjectFinal\AzureFinalAssignment\JobsViewService\JobsViewService\rcf\Debug\WebUserContent\" />
+        <SourceDirectory path="C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\JobsViewService\rcf\Debug\WebUserContent\" />
       </Content>
     </Contents>
   </WebRole>
@@ -35,7 +35,7 @@
     </ConfigurationSettings>
     <Contents>
       <Content destination=".\">
-        <SourceDirectory path="D:\FU\Cloud\ProjectFinal\AzureFinalAssignment\JobsViewService\JobsViewService\rcf\Debug\WorkerCrawlingContent\" />
+        <SourceDirectory path="C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\JobsViewService\rcf\Debug\WorkerCrawlingContent\" />
       </Content>
     </Contents>
   </WorkerRole>
@@ -55,7 +55,7 @@
     </Endpoints>
     <Contents>
       <Content destination=".\">
-        <SourceDirectory path="D:\FU\Cloud\ProjectFinal\AzureFinalAssignment\JobsViewService\JobsViewService\rcf\Debug\WebAdminContent\" />
+        <SourceDirectory path="C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\JobsViewService\rcf\Debug\WebAdminContent\" />
       </Content>
     </Contents>
   </WebRole>
@@ -65,7 +65,7 @@
     </ConfigurationSettings>
     <Contents>
       <Content destination=".\">
-        <SourceDirectory path="D:\FU\Cloud\ProjectFinal\AzureFinalAssignment\JobsViewService\JobsViewService\rcf\Debug\WorkerSplittingContent\" />
+        <SourceDirectory path="C:\Users\HaiNT\Desktop\Cloud\AzureFinalAssignment\JobsViewService\JobsViewService\rcf\Debug\WorkerSplittingContent\" />
       </Content>
     </Contents>
   </WorkerRole>
