@@ -73,7 +73,6 @@
   <ItemGroup>
     <Folder Include="WebAdminContent\" />
     <Folder Include="WebUserContent\" />
-    <Folder Include="WorkerBuildingContent\" />
     <Folder Include="WorkerCrawlingContent\" />
     <Folder Include="WorkerSplittingContent\" />
   </ItemGroup>

@@ -17,6 +17,7 @@ namespace CommonLibrary
         public string Name { get; set; }
 
         public virtual ICollection<Document> Documents { get; set; }
+        public virtual ICollection<Ad> Ads { get; set; }
     }
 
     public class Document
@@ -83,5 +84,40 @@ namespace CommonLibrary
 
         [StringLength(255)]
         public string Preferences { get; set; }
+    }
+
+    public class Ad
+    {
+        [Key]
+        public int AdId { get; set; }
+        
+        [StringLength(100)]
+        public string Title { get; set; }
+
+        [Required]
+        public int Price { get; set; }
+
+        [StringLength(1000)]
+        public string Description { get; set; }
+
+        [StringLength(2083)]
+        public string ImageURL { get; set; }
+
+        [StringLength(2083)]
+        public string ThumbnailURL { get; set; }
+
+        [Required]
+        [DataType(DataType.DateTime)]
+        public DateTime PostedDate { get; set; }
+
+        public int CategoryId { get; set; }
+
+        [StringLength(12)]
+        public string Phone { get; set; }
+
+        [Column(TypeName = "nvarchar(max)")]
+        public string Keyword { get; set; }
+
+        public virtual Category Category { get; set; }
     }
 }

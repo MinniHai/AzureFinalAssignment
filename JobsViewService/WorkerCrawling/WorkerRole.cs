@@ -73,6 +73,7 @@ namespace WorkerCrawling
                 HtmlWeb web = new HtmlWeb();
                 HtmlDocument hdoc = web.Load(url);
                 HtmlNode[] nodes = hdoc.DocumentNode.SelectNodes("//a[contains(@class,'job-title')]").ToArray();
+                HtmlNode nodes1 = hdoc.DocumentNode.SelectSingleNode("//span[contains(@class,'orange')]");
                 foreach (HtmlNode item in nodes)
                 {
                     String Title = "";
@@ -111,35 +112,30 @@ namespace WorkerCrawling
         {
             using (var db = new JobsViewDbContext())
             {
+                string url = "http://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam/";
+                HtmlNode.ElementsFlags.Remove("option");
+                HtmlDocument html = new HtmlWeb() { AutoDetectEncoding = true }.Load(url);
 
-                String name = "";
+                var root = html.DocumentNode;
 
-                Document doc = new Document();
-                string url = "http://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam";
-                HtmlWeb web = new HtmlWeb();
-                HtmlDocument hdoc = web.Load(url);
-                HtmlNode[] nodes = hdoc.DocumentNode.SelectNodes("//a[contains(@class,'job-title')]").ToArray();
-
-                foreach (HtmlNode item in nodes)
+                var nodes = root.SelectNodes("//select[contains(@id,'cateListMainSearch')]/option").Skip(1)
+                    .Select(n => new
+                    {
+                        id = n.Attributes["value"].Value,
+                        value = n.InnerText
+                    }).ToList();
+                foreach (var item in nodes)
                 {
-
-                    string urlChild = item.GetAttributeValue("href", "");
-
-                    HtmlWeb webChild = new HtmlWeb();
-                    HtmlDocument docChild = webChild.Load(urlChild);
-                    HtmlNode nodeChild = docChild.DocumentNode.SelectSingleNode("//div[contains(@class,'push-top-xs')]/a");
-                    name = nodeChild.InnerText;
 
                     Category cateExist = new Category();
 
-                    if (db.Categories.Any(c => c.Name == name) == false)
+                    if (db.Categories.Any(c => c.Name == item.value) == false)
                     {
                         Category cate = new Category();
-                        cate.CategoryId = id;
-                        cate.Name = HttpUtility.HtmlDecode(name);
+                        cate.CategoryId = int.Parse(item.id);
+                        cate.Name = HttpUtility.HtmlDecode(item.value);
                         db.Categories.Add(cate);
                         db.SaveChanges();
-                        id++;
                     };
 
                 }
@@ -166,10 +162,10 @@ namespace WorkerCrawling
 
         private async Task RunAsync(CancellationToken cancellationToken)
         {
+            insertCategory();
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
             {
-                insertCategory();
                 getJob();
                 Trace.TraceInformation("Working");
                 await Task.Delay(100000000);
