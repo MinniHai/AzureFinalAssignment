@@ -27,6 +27,7 @@ namespace WorkerSplitting
         public override void Run()
         {
             Trace.TraceInformation("WorkerRole1 is running");
+            Trace.TraceInformation("Test Slack");
             CloudQueueMessage msg = null;
             //documentsQueue.DeleteMessage
             while (true)
