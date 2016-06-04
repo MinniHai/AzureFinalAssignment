@@ -7,11 +7,28 @@ using System.Threading.Tasks;
 
 namespace CommonLibrary
 {
-    public class JobsViewDbContext : DbContext
+    public sealed class JobsViewDbContext : DbContext
     {
-        public JobsViewDbContext() : base("name=JobsViewDbContext")
+        JobsViewDbContext() : base("name=JobsViewDbContext")
         {
 
+        }
+
+        public static JobsViewDbContext Instance
+        {
+            get
+            {
+                return Nested.instance;
+            }
+        }
+
+        class Nested
+        {
+            static Nested()
+            {
+            }
+
+            internal static readonly JobsViewDbContext instance = new JobsViewDbContext();
         }
 
         public System.Data.Entity.DbSet<Category> Categories { get; set; }
