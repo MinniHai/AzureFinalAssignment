@@ -21,7 +21,7 @@ namespace WorkerSplitting
     {
 
         private CloudQueue myQueue;
-        private JobsViewDbContext db;
+        private readonly JobsViewDbContext db = JobsViewDbContext.Instance;
         //private ArrayList dbKeyWords;
 
         public override void Run()
@@ -316,7 +316,7 @@ namespace WorkerSplitting
             // For information on handling configuration changes
             // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
             //var dbConnectionString = CloudConfigurationManager.GetSetting("DBConnectionString");
-            db = new JobsViewDbContext();
+            //db = new JobsViewDbContext();
 
             var storageAccount = CloudStorageAccount.Parse(RoleEnvironment.GetConfigurationSettingValue("StorageConnectionString"));
 
