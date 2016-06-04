@@ -13,6 +13,7 @@ using CommonLibrary;
 using System.Data.Entity;
 using HtmlAgilityPack;
 using System.Web;
+using Microsoft.WindowsAzure.Storage.Queue;
 
 namespace WorkerCrawling
 {
@@ -21,8 +22,7 @@ namespace WorkerCrawling
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
         private readonly JobsViewDbContext db = JobsViewDbContext.Instance;
-
-        int id = 1;
+        private CloudQueue queue1;
 
         public override void Run()
         {
@@ -31,6 +31,7 @@ namespace WorkerCrawling
             try
             {
                 this.RunAsync(this.cancellationTokenSource.Token).Wait();
+
             }
             finally
             {
@@ -43,14 +44,23 @@ namespace WorkerCrawling
             // Set the maximum number of concurrent connections
             ServicePointManager.DefaultConnectionLimit = 12;
 
+            // Open storage account using credentials from .cscfg file.
+            var storageAccount = CloudStorageAccount.Parse
+                (RoleEnvironment.GetConfigurationSettingValue("StorageConnectionString"));
+
+
+            Trace.TraceInformation("Creating images queue");
+            CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
+            queue1 = queueClient.GetQueueReference("queue1");
+            queue1.CreateIfNotExists();
+
+            Trace.TraceInformation("Storage initialized");
             // For information on handling configuration changes
             // see the MSDN topic at http://go.microsoft.com/fwlink/?LinkId=166357.
 
-            bool result = base.OnStart();
-
             Trace.TraceInformation("GetJobWorker has been started");
 
-            return result;
+            return base.OnStart();
         }
 
         public override void OnStop()
@@ -67,12 +77,14 @@ namespace WorkerCrawling
 
         public void getJob()
         {
-            Document doc = new Document();
             string url = "http://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam";
             HtmlWeb web = new HtmlWeb();
             HtmlDocument hdoc = web.Load(url);
             HtmlNode[] nodes = hdoc.DocumentNode.SelectNodes("//a[contains(@class,'job-title')]").ToArray();
-            HtmlNode nodes1 = hdoc.DocumentNode.SelectSingleNode("//span[contains(@class,'orange')]");
+
+            // Use this code for test.
+            //HtmlNode item = nodes[1];
+
             foreach (HtmlNode item in nodes)
             {
                 String Title = "";
@@ -94,15 +106,18 @@ namespace WorkerCrawling
                 Text = nodeChild.InnerText;
                 Html = nodeChild.OuterHtml.Trim();
                 Link = urlChild.Trim();
+                if (db.Documents.Any(d => d.Link == Link) == false)
+                {
+                    Document doc = new Document();
+                    doc.CategoryId = getCategory(HttpUtility.HtmlDecode(cateName));
+                    doc.Title = HttpUtility.HtmlDecode(Title);
+                    doc.Text = HttpUtility.HtmlDecode(Text);
+                    doc.Html = Html;
+                    doc.Link = Link;
 
-                doc.CategoryId = getCategory(HttpUtility.HtmlDecode(cateName));
-                doc.Title = HttpUtility.HtmlDecode(Title);
-                doc.Text = HttpUtility.HtmlDecode(Text);
-                doc.Html = Html;
-                doc.Link = Link;
-
-                db.Documents.Add(doc);
-                db.SaveChanges();
+                    db.Documents.Add(doc);
+                    db.SaveChanges();
+                }
             }
         }
 
@@ -118,17 +133,15 @@ namespace WorkerCrawling
                 .Select(n => new
                 {
                     id = n.Attributes["value"].Value,
-                    value = n.InnerText
+                    value = HttpUtility.HtmlDecode(n.InnerText)
                 }).ToList();
             foreach (var item in nodes)
             {
-                Category cateExist = new Category();
-
                 if (db.Categories.Any(c => c.Name == item.value) == false)
                 {
                     Category cate = new Category();
                     cate.CategoryId = int.Parse(item.id);
-                    cate.Name = HttpUtility.HtmlDecode(item.value);
+                    cate.Name = item.value;
                     db.Categories.Add(cate);
                     db.SaveChanges();
                 };
@@ -157,6 +170,8 @@ namespace WorkerCrawling
             while (!cancellationToken.IsCancellationRequested)
             {
                 getJob();
+                CloudQueueMessage message = new CloudQueueMessage("crawl successfully");
+                queue1.AddMessage(message);
                 Trace.TraceInformation("Working");
                 await Task.Delay(100000000);
             }
