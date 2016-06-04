@@ -20,6 +20,7 @@ namespace WorkerCrawling
     {
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
+        private readonly JobsViewDbContext db = JobsViewDbContext.Instance;
 
         int id = 1;
 
@@ -66,98 +67,87 @@ namespace WorkerCrawling
 
         public void getJob()
         {
-            using (var db = new JobsViewDbContext())
+            Document doc = new Document();
+            string url = "http://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam";
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument hdoc = web.Load(url);
+            HtmlNode[] nodes = hdoc.DocumentNode.SelectNodes("//a[contains(@class,'job-title')]").ToArray();
+            HtmlNode nodes1 = hdoc.DocumentNode.SelectSingleNode("//span[contains(@class,'orange')]");
+            foreach (HtmlNode item in nodes)
             {
-                Document doc = new Document();
-                string url = "http://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam";
-                HtmlWeb web = new HtmlWeb();
-                HtmlDocument hdoc = web.Load(url);
-                HtmlNode[] nodes = hdoc.DocumentNode.SelectNodes("//a[contains(@class,'job-title')]").ToArray();
-                HtmlNode nodes1 = hdoc.DocumentNode.SelectSingleNode("//span[contains(@class,'orange')]");
-                foreach (HtmlNode item in nodes)
-                {
-                    String Title = "";
-                    String Text = "";
-                    String Html = "";
-                    String Link = "";
-                    String cateName = "";
+                String Title = "";
+                String Text = "";
+                String Html = "";
+                String Link = "";
+                String cateName = "";
 
-                    Title = item.InnerText;
+                Title = item.InnerText;
 
-                    string urlChild = item.GetAttributeValue("href", "");
+                string urlChild = item.GetAttributeValue("href", "");
 
-                    HtmlWeb webChild = new HtmlWeb();
-                    HtmlDocument docChild = webChild.Load(urlChild);
-                    HtmlNode nodeChild = docChild.DocumentNode.SelectSingleNode("//div[@id='job-description']");
-                    HtmlNode nodeChild2 = docChild.DocumentNode.SelectSingleNode("//div[contains(@class,'push-top-xs')]/a");
+                HtmlWeb webChild = new HtmlWeb();
+                HtmlDocument docChild = webChild.Load(urlChild);
+                HtmlNode nodeChild = docChild.DocumentNode.SelectSingleNode("//div[@id='job-description']");
+                HtmlNode nodeChild2 = docChild.DocumentNode.SelectSingleNode("//div[contains(@class,'push-top-xs')]/a");
 
-                    cateName = nodeChild2.InnerText;
-                    Text = nodeChild.InnerText;
-                    Html = nodeChild.OuterHtml.Trim();
-                    Link = urlChild.Trim();
+                cateName = nodeChild2.InnerText;
+                Text = nodeChild.InnerText;
+                Html = nodeChild.OuterHtml.Trim();
+                Link = urlChild.Trim();
 
-                    doc.CategoryId = getCategory(HttpUtility.HtmlDecode(cateName));
-                    doc.Title = HttpUtility.HtmlDecode(Title);
-                    doc.Text = HttpUtility.HtmlDecode(Text);
-                    doc.Html = Html;
-                    doc.Link = Link;
+                doc.CategoryId = getCategory(HttpUtility.HtmlDecode(cateName));
+                doc.Title = HttpUtility.HtmlDecode(Title);
+                doc.Text = HttpUtility.HtmlDecode(Text);
+                doc.Html = Html;
+                doc.Link = Link;
 
-                    db.Documents.Add(doc);
-                    db.SaveChanges();
-                }
+                db.Documents.Add(doc);
+                db.SaveChanges();
             }
         }
 
         public void insertCategory()
         {
-            using (var db = new JobsViewDbContext())
-            {
-                string url = "http://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam/";
-                HtmlNode.ElementsFlags.Remove("option");
-                HtmlDocument html = new HtmlWeb() { AutoDetectEncoding = true }.Load(url);
+            string url = "http://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam/";
+            HtmlNode.ElementsFlags.Remove("option");
+            HtmlDocument html = new HtmlWeb() { AutoDetectEncoding = true }.Load(url);
 
-                var root = html.DocumentNode;
+            var root = html.DocumentNode;
 
-                var nodes = root.SelectNodes("//select[contains(@id,'cateListMainSearch')]/option").Skip(1)
-                    .Select(n => new
-                    {
-                        id = n.Attributes["value"].Value,
-                        value = n.InnerText
-                    }).ToList();
-                foreach (var item in nodes)
+            var nodes = root.SelectNodes("//select[contains(@id,'cateListMainSearch')]/option").Skip(1)
+                .Select(n => new
                 {
+                    id = n.Attributes["value"].Value,
+                    value = n.InnerText
+                }).ToList();
+            foreach (var item in nodes)
+            {
+                Category cateExist = new Category();
 
-                    Category cateExist = new Category();
-
-                    if (db.Categories.Any(c => c.Name == item.value) == false)
-                    {
-                        Category cate = new Category();
-                        cate.CategoryId = int.Parse(item.id);
-                        cate.Name = HttpUtility.HtmlDecode(item.value);
-                        db.Categories.Add(cate);
-                        db.SaveChanges();
-                    };
-
-                }
+                if (db.Categories.Any(c => c.Name == item.value) == false)
+                {
+                    Category cate = new Category();
+                    cate.CategoryId = int.Parse(item.id);
+                    cate.Name = HttpUtility.HtmlDecode(item.value);
+                    db.Categories.Add(cate);
+                    db.SaveChanges();
+                };
             }
         }
 
         public int getCategory(string name)
         {
-            using (var db = new JobsViewDbContext())
+            Category cate = new Category();
+
+            cate = db.Categories
+                   .Where(b => b.Name == name)
+                   .FirstOrDefault();
+
+            if (cate == null)
             {
-                Category cate = new Category();
-
-                cate = db.Categories
-                       .Where(b => b.Name == name)
-                       .FirstOrDefault();
-
-                if (cate == null)
-                {
-                    return 0;
-                }
-                return cate.CategoryId;
+                return 0;
             }
+            return cate.CategoryId;
         }
 
         private async Task RunAsync(CancellationToken cancellationToken)
