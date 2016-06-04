@@ -19,6 +19,7 @@
   <WorkerRole name="WorkerCrawling" vmsize="Small">
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
+      <Setting name="StorageConnectionString" />
       <Setting name="JobsViewDbContext" />
     </ConfigurationSettings>
   </WorkerRole>
