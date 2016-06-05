@@ -21,13 +21,12 @@ namespace WorkerSplitting
     {
 
         private CloudQueue myQueue;
-        private readonly JobsViewDbContext db = JobsViewDbContext.Instance;
+        public static  JobsViewDbContext db = JobsViewDbContext.Instance;
         //private ArrayList dbKeyWords;
 
         public override void Run()
         {
             Trace.TraceInformation("WorkerRole1 is running");
-            Trace.TraceInformation("Test Slack");
             CloudQueueMessage msg = null;
             //documentsQueue.DeleteMessage
             while (true)
@@ -53,7 +52,7 @@ namespace WorkerSplitting
                         this.myQueue.DeleteMessage(msg);
                         Trace.TraceError("Deleting poison queue item: '{0}'", msg.AsString);
                     }
-                    Trace.TraceError("Exception in Keyword Splitter Worker: '{0}'", e.Message);
+                    Trace.TraceError("Exception in keyword Splitter Worker: '{0}'", e.Message);
                     System.Threading.Thread.Sleep(5000);
                 }
             }
@@ -134,11 +133,11 @@ namespace WorkerSplitting
                     foreach (var item in keyWordsList)
                     {
 
-                        var result = db.Keywords.Where(k => k.Keyword_.Equals(item.ToString())).FirstOrDefault();
+                        var result = db.Keywords.Where(k => k.Keyword.Equals(item.ToString())).FirstOrDefault();
                         //Kiem tra xem keyword da ton tai trong bang keywords hay chua, neu chua thi moi add vo
                         if (result == null)
                         {
-                            db.Keywords.Add(new Keyword { Keyword_ = item.ToString() });
+                            db.Keywords.Add(new keyword { Keyword = item.ToString() });
                             db.SaveChanges();
 
                         }
@@ -146,22 +145,22 @@ namespace WorkerSplitting
                         double occurence = Double.Parse(keyWordsTable[item].ToString());
 
                         //Lay ID cua record vua moi add vao bang keyword
-                        var newKeyWord = db.Keywords.Where(k => k.Keyword_.Equals(item.ToString())).FirstOrDefault();//SQl ko phan bik hoa thuong
+                        var newKeyWord = db.Keywords.Where(k => k.Keyword.Equals(item.ToString())).FirstOrDefault();//SQl ko phan bik hoa thuong
                         //int fixedID = 0;
                         //foreach(var i in newKeyWord)
                         //{
-                        //    var tmp = db.doc_keyword.Where(d => d.DocId.Equals(doc.Id) && d.KeywordId.Equals(i.Id));
+                        //    var tmp = db.doc_keyword.Where(d => d.DocumentId.Equals(doc.DocumentId) && d.KeywordId.Equals(i.DocumentId));
                         //    if (tmp == null)
                         //    {
-                        //        fixedID = i.Id;
+                        //        fixedID = i.DocumentId;
                         //    }
                         //}
 
-                        //Kiem tra trung Id
+                        //Kiem tra trung DocumentId
                         Trace.TraceInformation("docId: '{0}'", doc.DocumentId);
                         Trace.TraceInformation("keyWordID: '{0}'", newKeyWord.KeywordId);
 
-                        db.Document_Keyword.Add(new Document_Keyword
+                        db.Document_Keyword.Add(new doc_keyword
                         {
                             DocumentId = doc.DocumentId,
                             KeywordId = newKeyWord.KeywordId,

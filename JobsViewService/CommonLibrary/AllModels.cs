@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace CommonLibrary
 {
-    public class Category
+    public class category
     {
         [Key]
         public int CategoryId { get; set; }
@@ -16,11 +16,11 @@ namespace CommonLibrary
         [StringLength(100)]
         public string Name { get; set; }
 
-        public virtual ICollection<Document> Documents { get; set; }
-        public virtual ICollection<Ad> Ads { get; set; }
+        public virtual ICollection<document> Documents { get; set; }
+        public virtual ICollection<ads> Ads { get; set; }
     }
 
-    public class Document
+    public class document
     {
         [Key]
         public int DocumentId { get; set; }
@@ -42,23 +42,23 @@ namespace CommonLibrary
         [Column(TypeName = "nvarchar")]
         public string Link { get; set; }
 
-        public virtual Category Category { get; set; }
-        public virtual ICollection<Document_Keyword> Document_Keyword { get; set; }
+        public virtual category Category { get; set; }
+        public virtual ICollection<doc_keyword> Document_Keyword { get; set; }
     }
 
-    public class Keyword
+    public class keyword
     {
         [Key]
         public int KeywordId { get; set; }
 
         [StringLength(100)]
         [Column(TypeName = "nvarchar")]
-        public string Keyword_ { get; set; }
-        public virtual ICollection<Document_Keyword> Document_Keyword { get; set; }
+        public string Keyword { get; set; }
+        public virtual ICollection<doc_keyword> Document_Keyword { get; set; }
 
     }
 
-    public class Document_Keyword
+    public class doc_keyword
     {
         [Column(Order = 0), Key]
         [ForeignKey("Document")]
@@ -72,11 +72,11 @@ namespace CommonLibrary
 
         public double? TFIDF { get; set; }
 
-        public virtual Keyword Keyword { get; set; }
-        public virtual Document Document { get; set; }
+        public virtual keyword Keyword { get; set; }
+        public virtual document Document { get; set; }
     }
 
-    public class User_Preference
+    public class user_preference
     {
         [Key]
         [StringLength(1000)]
@@ -86,7 +86,7 @@ namespace CommonLibrary
         public string Preferences { get; set; }
     }
 
-    public class Ad
+    public class ads
     {
         [Key]
         public int AdId { get; set; }
@@ -118,6 +118,6 @@ namespace CommonLibrary
         [Column(TypeName = "nvarchar(max)")]
         public string Keyword { get; set; }
 
-        public virtual Category Category { get; set; }
+        public virtual category Category { get; set; }
     }
 }

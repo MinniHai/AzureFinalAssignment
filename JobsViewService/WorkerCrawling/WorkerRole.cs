@@ -20,9 +20,7 @@ namespace WorkerCrawling
     {
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
-        private readonly JobsViewDbContext db = JobsViewDbContext.Instance;
-
-        int id = 1;
+        public static JobsViewDbContext db = JobsViewDbContext.Instance;
 
         public override void Run()
         {
@@ -67,7 +65,7 @@ namespace WorkerCrawling
 
         public void getJob()
         {
-            Document doc = new Document();
+            document doc = new document();
             string url = "http://www.vietnamworks.com/tim-viec-lam/tat-ca-viec-lam";
             HtmlWeb web = new HtmlWeb();
             HtmlDocument hdoc = web.Load(url);
@@ -122,11 +120,11 @@ namespace WorkerCrawling
                 }).ToList();
             foreach (var item in nodes)
             {
-                Category cateExist = new Category();
+                category cateExist = new category();
 
                 if (db.Categories.Any(c => c.Name == item.value) == false)
                 {
-                    Category cate = new Category();
+                    category cate = new category();
                     cate.CategoryId = int.Parse(item.id);
                     cate.Name = HttpUtility.HtmlDecode(item.value);
                     db.Categories.Add(cate);
@@ -137,7 +135,7 @@ namespace WorkerCrawling
 
         public int getCategory(string name)
         {
-            Category cate = new Category();
+            category cate = new category();
 
             cate = db.Categories
                    .Where(b => b.Name == name)
