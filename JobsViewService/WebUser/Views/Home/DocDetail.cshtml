@@ -6,23 +6,24 @@
 <div style="text-align: center; padding-top: 30px">
     <h1 style="color: red">Detail Of Work</h1>
 </div>
+@using CommonLibrary;
 <div style="margin-left: 200px; color: blueviolet">
     @{
-        var doc = ViewData["DocumentDetail"] as Document;
+        var doc = ViewData["DocumentDetail"] as document;
 
     }
     <h3>
         <li>
-            Title: @doc.title
+            Title: @doc.Title
         </li>
         <li>
-            Text: @doc.text
+            Text: @doc.Text
         </li>
         <li>
-            Html: @doc.html
+            Html: @doc.Html
         </li>
         <li>
-            Link: @doc.link
+            Link: @doc.Link
         </li>
     </h3>
 </div>
@@ -30,10 +31,10 @@
     <h1 style="color: red">Suggest Job</h1>
 </div>
 <div style="text-align: center; color: blueviolet">
-    @foreach (var docsg in (List<Document>) ViewBag.DocumentSgList)
+    @foreach (var docsg in (List<document>) ViewBag.DocumentSgList)
     {
         <li>
-            <h4 style="color: blue"> @Html.ActionLink(@docsg.title, "DocDetail", "Home", new {id = docsg.id}, null)</h4>
+            <h4 style="color: blue"> @Html.ActionLink(@docsg.Title, "DocDetail", "Home", new {id = docsg.DocumentId}, null)</h4>
         </li>
     }
 </div>
@@ -41,7 +42,7 @@
     <h1 style="color: red">Ads</h1>
 </div>
 <div style="text-align: center; color: blueviolet">
-    @foreach (var ads in (List<Ads>)ViewBag.AdsList)
+    @foreach (var ads in (List<ad>)ViewBag.AdsList)
     {
         <li>
             <h4 style="color: blue">@ads.Title  - @ads.Description - @ads.Keyword</h4>

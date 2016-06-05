@@ -100,7 +100,7 @@ namespace WebUser
             {
                 connection.ConnectionString = connectionString;
 
-                var command = new SqlCommand("SELECT * FROM document WHERE DocumentId=@p1") { Connection = connection };
+                var command = new SqlCommand("SELECT * FROM documents WHERE DocumentId=@p1") { Connection = connection };
 
                 var p1 = new SqlParameter("p1", docId);
                 command.Parameters.Add(p1);
@@ -149,7 +149,7 @@ namespace WebUser
             {
                 connection.ConnectionString = connectionString;
 
-                var command = new SqlCommand("SELECT * FROM document WHERE DocumentId!=@p1") { Connection = connection };
+                var command = new SqlCommand("SELECT * FROM documents WHERE DocumentId!=@p1") { Connection = connection };
 
                 var parameter = new SqlParameter("p1", docId);
                 command.Parameters.Add(parameter);
@@ -236,7 +236,7 @@ namespace WebUser
             try
             {
                 connection.Open();
-                const string sql = "SELECT dk.DocumentId, k.keyword FROM doc_keyword dk, keyword k WHERE dk.KeywordId=k.DocumentId AND dk.TF != 0 AND dk.TFIDF != 0";
+                const string sql = "SELECT dk.DocumentId, k.keyword FROM doc_keyword dk, keywords k WHERE dk.KeywordId=k.KeywordId AND dk.TF != 0 AND dk.TFIDF != 0";
                 var command = new SqlCommand(sql, connection);
 
                 var reader = command.ExecuteReader();
@@ -246,7 +246,7 @@ namespace WebUser
                     var docKeyword = new DocKeyword
                     {
                         DocId = Int32.Parse(record["DocumentId"].ToString()),
-                        Keyword = record["keyword"].ToString()
+                        Keyword = record["Keyword"].ToString()
                     };
 
                     docKeywordList.Add(docKeyword);
@@ -366,7 +366,7 @@ namespace WebUser
             try
             {
                 connection.Open();
-                const string sql = "SELECT dk.DocumentId, k.keyword FROM doc_keyword dk, keyword k WHERE dk.KeywordId=k.DocumentId AND dk.TF != 0 AND dk.TFIDF != 0 AND DocumentId=@p1";
+                const string sql = "SELECT dk.DocumentId, k.keyword FROM doc_keyword dk, keywords k WHERE dk.KeywordId=k.KeywordId AND dk.TF != 0 AND dk.TFIDF != 0 AND DocumentId=@p1";
                 var command = new SqlCommand(sql, connection);
                 var parameter = new SqlParameter("p1", DocId);
                 command.Parameters.Add(parameter);
@@ -377,7 +377,7 @@ namespace WebUser
                     var docKeyword = new DocKeyword
                     {
                         DocId = Int32.Parse(record["DocumentId"].ToString()),
-                        Keyword = record["keyword"].ToString()
+                        Keyword = record["Keyword"].ToString()
                     };
 
                     docKeywordList.Add(docKeyword);

@@ -21,7 +21,13 @@ namespace WebUser
             {
                 float tmp = 0;
                 var tfidfDocIdRequestList = _db.GetTfidf(docIdRequest);
-                for (var i = 0; i < (tfidfDocIdList.Count()); i++)
+                int count = 0;
+                if (tfidfDocIdList.Count() > tfidfDocIdRequestList.Count())
+                {
+                    count = tfidfDocIdRequestList.Count();
+                }
+                else count = tfidfDocIdList.Count();
+                for (var i = 0; i < count; i++)
                 {
                     tmp += (float)Math.Pow((tfidfDocIdList[i] - tfidfDocIdRequestList[i]), 2);
                 }

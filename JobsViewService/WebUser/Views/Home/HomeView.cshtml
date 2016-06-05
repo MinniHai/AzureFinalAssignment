@@ -7,14 +7,16 @@
     <h1 style="color: red">LIST OF WORK</h1>
 </div>
 <div style="margin-left: 50px">
-    @foreach (var items in (List<Document>)ViewBag.ListOfView)
+    @using CommonLibrary;
+    @foreach (var items in (List<document>)ViewBag.ListOfView)
     {
         <li>
             <h3 style="color: blue">
-                @Html.ActionLink(@items.title, "DocDetail", "Home", new { id = items.id }, null)
+                @Html.ActionLink(@items.Title, "DocDetail", "Home", new { id = items.DocumentId }, null)
             </h3>
-            <h4 style="margin-left: 70px; color: blue">@items.text</h4>
+            <!--<h4 style="margin-left: 70px; color: blue">@items.Title</h4> -->
         </li>
 
     }
+
 </div>
