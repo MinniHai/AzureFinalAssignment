@@ -19,14 +19,11 @@ namespace WorkerSplitting
 {
     public class WorkerRole : RoleEntryPoint
     {
-
-
-        private CloudQueue myQueue;
         public static  JobsViewDbContext db = JobsViewDbContext.Instance;
-        //private ArrayList dbKeyWords;
         private CloudQueue queue1;
         private CloudQueue queue2;
-
+        private string queueName1 = "queue1";
+        private string queueName2 = "queue2";
 
         public override void Run()
         {
@@ -327,8 +324,8 @@ namespace WorkerSplitting
 
             Trace.TraceInformation("Creating documents queue");
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            queue1 = queueClient.GetQueueReference("queue1");
-            queue2 = queueClient.GetQueueReference("queue2");
+            queue1 = queueClient.GetQueueReference(queueName1);
+            queue2 = queueClient.GetQueueReference(queueName2);
 
             queue1.CreateIfNotExists();
             queue2.CreateIfNotExists();
