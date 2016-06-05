@@ -21,9 +21,9 @@ namespace WorkerCrawling
     {
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
-
         public static JobsViewDbContext db = JobsViewDbContext.Instance;
         private CloudQueue queue1;
+        private string queueName1 = "queue1";
 
         public override void Run()
         {
@@ -52,7 +52,7 @@ namespace WorkerCrawling
 
             Trace.TraceInformation("Creating images queue");
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            queue1 = queueClient.GetQueueReference("queue1");
+            queue1 = queueClient.GetQueueReference(queueName1);
             queue1.CreateIfNotExists();
 
             Trace.TraceInformation("Storage initialized");
