@@ -64,7 +64,7 @@ namespace WebUser
             return items;
         }
 
-        public List<ads> GetListAdsByDocId(int docId)
+        public List<ad> GetListAdsByDocId(int docId)
         {
             _db = Db.Instance;
 
@@ -72,7 +72,7 @@ namespace WebUser
 
             var docKeywords = _db.GetlistdocKeywordByDocId(docId);
 
-            var listOfAdsId = new List<ads>();
+            var listOfAdsId = new List<ad>();
 
             foreach (var keyword in docKeywords)
             {
