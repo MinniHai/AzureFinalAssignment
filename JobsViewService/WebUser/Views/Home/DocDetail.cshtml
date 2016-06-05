@@ -1,0 +1,53 @@
+﻿
+<title>Detail Page </title>
+<div style="text-align: right; padding-top: 0px">
+    <h4 style="color: yellowgreen">@Html.ActionLink("Exit", "Index", "Home")</h4>
+</div>
+<div style="text-align: center; padding-top: 30px">
+    <h1 style="color: red">Detail Of Work</h1>
+</div>
+<div style="margin-left: 200px; color: blueviolet">
+    @{
+        var doc = ViewData["DocumentDetail"] as Document;
+
+    }
+    <h3>
+        <li>
+            Title: @doc.title
+        </li>
+        <li>
+            Text: @doc.text
+        </li>
+        <li>
+            Html: @doc.html
+        </li>
+        <li>
+            Link: @doc.link
+        </li>
+    </h3>
+</div>
+<div style="text-align: center; padding-top: 30px">
+    <h1 style="color: red">Suggest Job</h1>
+</div>
+<div style="text-align: center; color: blueviolet">
+    @foreach (var docsg in (List<Document>) ViewBag.DocumentSgList)
+    {
+        <li>
+            <h4 style="color: blue"> @Html.ActionLink(@docsg.title, "DocDetail", "Home", new {id = docsg.id}, null)</h4>
+        </li>
+    }
+</div>
+<div style="text-align: center; padding-top: 30px">
+    <h1 style="color: red">Ads</h1>
+</div>
+<div style="text-align: center; color: blueviolet">
+    @foreach (var ads in (List<Ads>)ViewBag.AdsList)
+    {
+        <li>
+            <h4 style="color: blue">@ads.Title  - @ads.Description - @ads.Keyword</h4>
+        </li>
+    }
+</div>
+
+
+
