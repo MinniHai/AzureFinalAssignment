@@ -58,5 +58,6 @@ namespace CommonLibrary
         public System.Data.Entity.DbSet<keyword> Keywords { get; set; }
         public System.Data.Entity.DbSet<doc_keyword> Document_Keyword { get; set; }
         public System.Data.Entity.DbSet<user_preference> User_Preference { get; set; }
+        public System.Data.Entity.DbSet<ads> Ads { get; set; }
     }
 }
