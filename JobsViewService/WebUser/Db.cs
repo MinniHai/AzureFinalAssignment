@@ -306,7 +306,7 @@ namespace WebUser
             return null;
         }
 
-        public List<ads> GetAllAds()
+        public List<ad> GetAllAds()
         {
             // Create SQL connection
             //var connectionString = ConfigurationManager.AppSettings["ConnectionString"];
@@ -327,7 +327,7 @@ namespace WebUser
                 dataAdapter.Fill(ds, "ads");
 
                 return (from DataRow row in ds.Tables["ads"].Rows
-                        select new ads
+                        select new ad
                         {
                             AdId = int.Parse(row["AdId"].ToString()),
                             Title = row["Title"].ToString(),
