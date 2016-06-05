@@ -1,4 +1,9 @@
 ﻿using System.Data.Entity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CommonLibrary
 {
@@ -29,7 +34,7 @@ namespace CommonLibrary
             string conn = "";
             if(type==Deploy.Local)
             {
-                conn = "Data Source=.; Initial Catalog=Test; User Id=sa; Password=";
+                conn = @"Data Source=TANHNSE61189\SQLEXPRESS; Initial Catalog=TEST; Integrated Security=True; MultipleActiveResultSets=True;";
             } else if (type == Deploy.Cloud)
             {
                 conn = "";
@@ -58,6 +63,6 @@ namespace CommonLibrary
         public System.Data.Entity.DbSet<keyword> Keywords { get; set; }
         public System.Data.Entity.DbSet<doc_keyword> Document_Keyword { get; set; }
         public System.Data.Entity.DbSet<user_preference> User_Preference { get; set; }
-        public System.Data.Entity.DbSet<ads> Ads { get; set; }
+        public System.Data.Entity.DbSet<ad> Ads { get; set; }
     }
 }
