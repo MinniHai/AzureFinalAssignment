@@ -20,25 +20,30 @@ namespace WorkerSplitting
     public class WorkerRole : RoleEntryPoint
     {
 
+
         private CloudQueue myQueue;
         public static  JobsViewDbContext db = JobsViewDbContext.Instance;
         //private ArrayList dbKeyWords;
+        private CloudQueue queue1;
+        private CloudQueue queue2;
+
 
         public override void Run()
         {
             Trace.TraceInformation("WorkerRole1 is running");
             CloudQueueMessage msg = null;
-            //documentsQueue.DeleteMessage
             while (true)
             {
                 try
                 {
-                    msg = this.myQueue.GetMessage();
-                    //Trace.TraceInformation("Get queue message for {0}---------------------------------------------", msg.AsString);
-                    if (msg != null && msg.AsString.Equals("letsgo"))
+                    msg = this.queue1.GetMessage();
+                    if (msg != null && msg.AsString.Equals("crawl successfully"))
                     {
                         ProcessQueueMessage();
-                        myQueue.DeleteMessage(msg);
+                        queue1.DeleteMessage(msg);
+                        Trace.TraceInformation("Done");
+                        CloudQueueMessage message = new CloudQueueMessage("split successfully");
+                        queue2.AddMessage(message);
                     }
                     else
                     {
@@ -49,7 +54,7 @@ namespace WorkerSplitting
                 {
                     if (msg != null && msg.DequeueCount > 5)
                     {
-                        this.myQueue.DeleteMessage(msg);
+                        this.queue1.DeleteMessage(msg);
                         Trace.TraceError("Deleting poison queue item: '{0}'", msg.AsString);
                     }
                     Trace.TraceError("Exception in keyword Splitter Worker: '{0}'", e.Message);
@@ -93,6 +98,7 @@ namespace WorkerSplitting
                     db.SaveChanges();
                 }
             }
+            Trace.TraceInformation("Done TFTDF");
         }
 
         private void calculateTF()
@@ -321,9 +327,11 @@ namespace WorkerSplitting
 
             Trace.TraceInformation("Creating documents queue");
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            myQueue = queueClient.GetQueueReference("message");
+            queue1 = queueClient.GetQueueReference("queue1");
+            queue2 = queueClient.GetQueueReference("queue2");
 
-            myQueue.CreateIfNotExists();
+            queue1.CreateIfNotExists();
+            queue2.CreateIfNotExists();
             Trace.TraceInformation("Queue initialized");
             return base.OnStart();
         }

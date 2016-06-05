@@ -11,6 +11,7 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="StorageConnectionString" value="UseDevelopmentStorage=true" />
       <Setting name="JobsViewDbContext" value="Data Source=TANHNSE61189\SQLEXPRESS; Initial Catalog=TEST; Integrated Security=True; MultipleActiveResultSets=True;" />
     </ConfigurationSettings>
   </Role>
