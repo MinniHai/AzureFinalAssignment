@@ -141,7 +141,14 @@ namespace WorkerSplitting
                         if (result == null)
                         {
                             db.Keywords.Add(new keyword { Keyword = item.ToString() });
-                            db.SaveChanges();
+                            try
+                            {
+                                db.SaveChanges();
+                            }
+                            catch (Exception)
+                            {
+
+                            }
 
                         }
 
