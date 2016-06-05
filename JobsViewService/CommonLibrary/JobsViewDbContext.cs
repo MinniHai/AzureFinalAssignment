@@ -10,6 +10,20 @@ namespace CommonLibrary
 
         }
 
+        public static string getStorageConnectionString(Deploy type)
+        {
+            string conn = "";
+            if (type == Deploy.Local)
+            {
+                conn = "UseDevelopmentStorage=true";
+            }
+            else if (type == Deploy.Cloud)
+            {
+                conn = "";
+            }
+            return conn;
+        }
+
         public static string getConnectionString(Deploy type)
         {
             string conn = "";
