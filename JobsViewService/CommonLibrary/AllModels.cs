@@ -17,7 +17,7 @@ namespace CommonLibrary
         public string Name { get; set; }
 
         public virtual ICollection<document> Documents { get; set; }
-        public virtual ICollection<ads> Ads { get; set; }
+        public virtual ICollection<ad> Ads { get; set; }
     }
 
     public class document
@@ -86,7 +86,7 @@ namespace CommonLibrary
         public string Preferences { get; set; }
     }
 
-    public class ads
+    public class ad
     {
         [Key]
         public int AdId { get; set; }
