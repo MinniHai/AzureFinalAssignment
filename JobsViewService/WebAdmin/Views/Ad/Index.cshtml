@@ -1,0 +1,235 @@
+﻿
+@using WebAdmin.Models
+@using CommonLibrary
+@model ad
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Content/assets/plugins/magic-suggest/bootstrap-tagsinput.css" rel="stylesheet" />
+<script src="~/Content/assets/plugins/magic-suggest/bootstrap-tagsinput.min.js"></script>
+<link href="~/Content/custom-css/as_previewpictureLogo.css" rel="stylesheet" />
+
+<style>
+    mark {
+        background-color: lightgray;
+        color: black;
+        border-radius: 3px;
+    }
+
+    .scrollDiv {
+        width: 70em;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .bootstrap-tagsinput input {
+        width: 600px;
+    }
+</style>
+@section breadcrumb{
+    <ol class="breadcrumb">
+        <li>Ad Manager</li>
+    </ol>
+    <div class="page-header_title">
+        <h1>
+            Ad Manager
+        </h1>
+    </div>
+}
+<div class="row">
+    <div class="pull-right">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#CreateAd"><i class="fa fa-plus"></i> Add New</button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#DetailAd" style="display:none" id="DetailAdBtn"><i class="fa fa-plus"></i></button>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="DetailAd">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="divDetailAd">
+
+            </div>
+         
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" id="CreateAd">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form name="AddAdForm" id="AddAdForm" class="form">
+                <div class="modal-header">
+                    <h1>Create Ad</h1>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group">
+                                <label>Category</label>
+                                @Html.DropDownListFor(model => model.CategoryId, new SelectList(ViewBag.ListCategories, "Id", "Name"),new { @class="form-control"})
+                             
+                            </div>
+                            <div class="form-group">
+                                <label>Title</label>
+                                @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
+                               
+                            </div>
+                            <div class="form-group">
+                                <label>Price</label>
+                                @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
+                   
+                            </div>
+                            <div class="form-group">
+                                <label>Phone</label>
+                                @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+                         
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="NameAcronym">Image</label>
+                                <div class="AS_PreviewPicture">
+                                    <input type='file' style="display:none" id="ImageFile" />
+                                    <br>
+                                    <img src="~/Photo/default.gif" />
+                                    <div><a class="AS_RefeshPic btn btn-xs btn-raised btn-primary">Refesh</a></div>
+                                </div>
+
+                              
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+                      
+                    </div>
+                    <div class="form-group">
+                        <label>Keyword</label>
+                        <input name="Keyword" data-role="tagsinput" style="width:100%" class="form-control" />
+                      
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseAddAd">Close</button>
+                    <a onclick="AddAdButton();" class="btn btn-primary">Create</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="row">
+
+
+    <div class="scrollDiv">
+        <table class="table no-margin" id="table-source">
+
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Thumbnail</th>
+                    <th>PostedDate</th>
+                    <th>Phone</th>
+                    <th style="width:250px">Keyword</th>
+                    <th style="width:auto">Detail</th>
+                    <th style="width:auto">Delete</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Content/custom-js/admin-AS_PreviewPicture.js"></script>
+<script src="~/Content/custom-js/Ad-Manager.js"></script>
+    <script>
+        $(document).ready(function () {
+            InitDataSourceDatatable();
+        });
+       
+
+
+        function RefreshDataSourceDatatable() {
+            var oTable = $('#table-source').dataTable();
+            oTable._fnPageChange(0);
+            oTable._fnAjaxUpdate();
+        }
+
+        function InitDataSourceDatatable() {
+            $("#table-source").dataTable({
+                "bFilter": true,
+                "bRetrieve": true,
+                "bServerSide": true,
+                "bScrollCollapse": true,
+                "sAjaxSource": "@Url.Action("LoadData")",
+                "bProcessing": true,
+                "bFilter": true,
+                "aoColumnDefs": [
+                    {
+                        "aTargets": [4],
+                        "mRender": function (data, type, row) {
+                            var result = "  <img  src='~/Photo/default.gif' height='50px'/>";
+                            if (data != "") {
+                                result = "  <img  src=" + data + "  height='50px'/>";
+                            }
+                             
+                            return result;
+                        },
+                        "bSortable": false,
+                        "sClass": "text-center"
+                    }
+                    , {
+                        "aTargets": [7],
+                        "mRender": function (data, type, row) {
+                            var result = "";
+                            if (data == "") {
+                                result = "Dont have data";
+                            } else {
+                                if (data.indexOf(',') != -1) {
+                                    var res = data.split(",");
+                                    var r = "";
+                                    $(res).each(function (i, e) {
+                                        r += '<mark>' + e + '</mark>&nbsp;&nbsp;';
+                                    });
+                                    result = '<p>' + r + '</p>';
+                                } else {
+                                    result = '<mark>' + data + '</mark>';
+                                }
+                            }
+                            return result;
+                        },
+                        "bSortable": false,
+                        "sClass": "text-center"
+                    }
+                    , {
+                        "aTargets": [8],
+                        "mRender": function (data, type, row) {
+                            var id = row[8];
+                            var result = " <a data-id='" + id + "' onclick='detailAds(this);' href='#'>Detail</a>";
+                            return result;
+                        },
+                        "bSortable": false,
+                        "sClass": "text-center"
+                    }, {
+                        "aTargets": [9],
+                        "mRender": function (data, type, row) {
+                            var id = row[8];
+                            var result = "  <a data-id='" + id + "' onclick='deleteAds(this);' href='#'>Delete</a>";
+                            return result;
+                        },
+                        "bSortable": false,
+                        "sClass": "text-center"
+                    }
+                ],
+                "bAutoWidth": false,
+            });
+
+        }
+       
+    </script>
+}

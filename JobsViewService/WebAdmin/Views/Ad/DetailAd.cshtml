@@ -1,0 +1,89 @@
+﻿@using WebAdmin.Models
+@using CommonLibrary;
+@model ad
+@{
+    Layout = null;
+}
+<link href="~/Content/assets/plugins/magic-suggest/bootstrap-tagsinput.css" rel="stylesheet" />
+<script src="~/Content/assets/plugins/magic-suggest/bootstrap-tagsinput.min.js"></script>
+<link href="~/Content/custom-css/as_previewpictureLogo.css" rel="stylesheet" />
+<script src="~/Content/custom-js/admin-AS_PreviewPicture.js"></script>
+<form name="UpdateAd" id="UpdateAd" class="form">
+    <div class="modal-header">
+        <h1>Detail Ad</h1>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>Category</label>
+                    @Html.DropDownListFor(model => model.categoryId, new SelectList(ViewBag.ListCategories, "Id", "Name"), new { @class = "form-control", id = "categoryIdEdit" })
+                   
+                </div>
+                <div class="form-group">
+                    <label>Title</label>
+                    @Html.TextBoxFor(model => model.Title, new { @class = "form-control", id = "TitleEdit" })
+                
+                </div>
+                <div class="form-group">
+                    <label>Price</label>
+                    @Html.TextBoxFor(model => model.Price, new { @class = "form-control", id = "PriceEdit" })
+                   
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", id = "PhoneEdit" })
+                
+                </div>
+                <div class="form-group">
+                    <label>PostedDate</label>
+                    @Html.EditorFor(model => model.PostedDate, new { htmlAttributes = new { @class = "form-control", id = "PostedDateEdit" } })
+                
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+
+                </div>
+                <div class="form-group">
+
+                    <label for="NameAcronym">Image</label>
+                    @if (Model.ImageURL == null || Model.ImageURL.Trim() == "")
+                    {
+                        <div class="AS_PreviewPicture">
+                            <input type='file' style="display:none" id="EditImageAd" />
+                            <br>
+                            <img src="~/Photo/default.gif" />
+                            <div><a class="AS_RefeshPic btn btn-xs btn-raised btn-primary">Refesh</a></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="AS_PreviewPicture">
+                            <input type='file' style="display:none" id="EditImageAd" />
+                            <br>
+                            <img src="@Model.ImageURL" />
+                            <div><a class="AS_RefeshPic btn btn-xs btn-raised btn-primary">Refesh</a></div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            @Html.TextBoxFor(model => model.Description, new { @class = "form-control", id = "DescriptionEdit" })
+          
+        </div>
+        <div class="form-group">
+            <label>Keyword</label>
+            <input name="Keyword" data-role="tagsinput" style="width:100%" class="form-control" value="@Model.Keyword" id="KeywordEdit" />
+           
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" id="btnCloseUpdateAdd">Close</button>
+        <a onclick="UpdateAdButton(this);" data-id="@Model.AdId" class="btn btn-primary">Update</a>
+    </div>
+</form>

@@ -15,7 +15,7 @@ namespace WebUser
         private string connectionString = null;
         public Db() : base()
         {
-            connectionString = JobsViewDbContext.getConnectionString(JobsViewDbContext.Deploy.Local); 
+            connectionString = JobsViewDbContext.getConnectionString(); 
 
         }
 
