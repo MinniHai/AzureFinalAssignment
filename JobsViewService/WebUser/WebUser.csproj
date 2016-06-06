@@ -69,6 +69,14 @@
       <HintPath>..\packages\Microsoft.Data.Services.Client.5.7.0\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocol.Extensions, Version=1.0.2.33, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocol.Extensions.1.0.2.206221351\lib\net45\Microsoft.IdentityModel.Protocol.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OpenIdConnect, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OpenIdConnect.3.0.1\lib\net45\Microsoft.Owin.Security.OpenIdConnect.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=2.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Private>True</Private>
     </Reference>
@@ -86,6 +94,12 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=4.0.20622.1351, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.2.206221351\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Spatial, Version=5.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Spatial.5.7.0\lib\net40\System.Spatial.dll</HintPath>
       <Private>True</Private>
@@ -209,20 +223,34 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="PolicyAuthHelpers\HttpDocumentRetriever.cs" />
+    <Compile Include="PolicyAuthHelpers\PolicyAuthorize.cs" />
+    <Compile Include="PolicyAuthHelpers\PolicyConfigurationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="WebRole.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-tagsinput.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\fabric.components.css" />
+    <Content Include="Content\fabric.components.min.css" />
+    <Content Include="Content\fabric.components.rtl.css" />
+    <Content Include="Content\fabric.components.rtl.min.css" />
+    <Content Include="Content\fabric.css" />
+    <Content Include="Content\fabric.min.css" />
+    <Content Include="Content\fabric.rtl.css" />
+    <Content Include="Content\fabric.rtl.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bootstrap-tagsinput-angular.js" />
+    <Content Include="Scripts\bootstrap-tagsinput.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -233,11 +261,47 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Content\sass\_Office.Color.Variables.scss" />
+    <Content Include="Content\sass\_Fabric.ZIndex.Variables.scss" />
+    <Content Include="Content\sass\_Fabric.Utilities.scss" />
+    <Content Include="Content\sass\_Fabric.Typography.Variables.scss" />
+    <Content Include="Content\sass\_Fabric.Typography.scss" />
+    <Content Include="Content\sass\_Fabric.Typography.Language.Overrides.scss" />
+    <Content Include="Content\sass\_Fabric.Typography.Fonts.scss" />
+    <Content Include="Content\sass\_Fabric.Responsive.Variables.scss" />
+    <Content Include="Content\sass\_Fabric.Responsive.Utilities.Variables.scss" />
+    <Content Include="Content\sass\_Fabric.Mixins.scss" />
+    <Content Include="Content\sass\_Fabric.Mixins.RTL.scss" />
+    <Content Include="Content\sass\_Fabric.Icons.scss" />
+    <Content Include="Content\sass\_Fabric.Grid.scss" />
+    <Content Include="Content\sass\_Fabric.Common.scss" />
+    <Content Include="Content\sass\_Fabric.Color.Variables.scss" />
+    <Content Include="Content\sass\_Fabric.Color.Mixins.scss" />
+    <Content Include="Content\sass\_Fabric.Animations.scss" />
+    <Content Include="Content\sass\_Fabric.Animations.RTL.scss" />
+    <Content Include="Content\sass\Fabric.Utilities.Output.scss" />
+    <Content Include="Content\sass\Fabric.Typography.Output.scss" />
+    <Content Include="Content\sass\Fabric.Typography.Language.Overrides.Output.scss" />
+    <Content Include="Content\sass\Fabric.Typography.Fonts.Output.scss" />
+    <Content Include="Content\sass\Fabric.scss" />
+    <Content Include="Content\sass\Fabric.RTL.scss" />
+    <Content Include="Content\sass\Fabric.Responsive.Utilities.Output.scss" />
+    <Content Include="Content\sass\Fabric.Icons.RTL.Output.scss" />
+    <Content Include="Content\sass\Fabric.Icons.Output.scss" />
+    <Content Include="Content\sass\Fabric.Icons.Font.Output.scss" />
+    <Content Include="Content\sass\Fabric.Grid.Output.scss" />
+    <Content Include="Content\sass\Fabric.Components.scss" />
+    <Content Include="Content\sass\Fabric.Color.Mixins.Output.scss" />
+    <Content Include="Content\sass\Fabric.Animations.RTL.Output.scss" />
+    <Content Include="Content\sass\Fabric.Animations.Output.scss" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <None Include="Scripts\jquery-2.2.3.intellisense.js" />
+    <Content Include="Scripts\enterkey-filter.js" />
     <Content Include="Scripts\jquery-2.2.3.js" />
     <Content Include="Scripts\jquery-2.2.3.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.fabric.js" />
+    <Content Include="Scripts\jquery.fabric.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -287,6 +351,7 @@
     <Content Include="Views\Home\DocDetail.cshtml" />
     <Content Include="Views\Home\HomePage.cshtml" />
     <Content Include="Views\Home\HomeView.cshtml" />
+    <Content Include="Views\Account\Preferences.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
