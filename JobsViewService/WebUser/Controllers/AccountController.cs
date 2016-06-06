@@ -10,6 +10,14 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebUser.Models;
 
+using Microsoft.Owin.Security.OpenIdConnect;
+using Microsoft.Owin.Security.Cookies;
+using WebUser.PolicyAuthHelpers;
+using System.Web.Helpers;
+using System.Data.Entity;
+using CommonLibrary;
+using System.Collections.Generic;
+
 namespace WebUser.Controllers
 {
     [Authorize]
@@ -480,6 +488,117 @@ namespace WebUser.Controllers
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
         }
+        #endregion
+
+        #region Azure Identity
+
+        private JobsViewDbContext db = JobsViewDbContext.Instance;
+        public void SignIn()
+        {
+            if (!Request.IsAuthenticated)
+            {
+                // To execute a policy, you simply need to trigger an OWIN challenge.
+                // You can indicate which policy to use by adding it to the AuthenticationProperties using the PolicyKey provided.
+
+                HttpContext.GetOwinContext().Authentication.Challenge(
+                    new AuthenticationProperties(
+                        new Dictionary<string, string>
+                        {
+                            {Startup.PolicyKey, Startup.SignInPolicyId}
+                        })
+                    {
+                        RedirectUri = "/",
+                    }, OpenIdConnectAuthenticationDefaults.AuthenticationType);
+            }
+        }
+
+        public void SignUp()
+        {
+            if (!Request.IsAuthenticated)
+            {
+                HttpContext.GetOwinContext().Authentication.Challenge(
+                    new AuthenticationProperties(
+                        new Dictionary<string, string>
+                        {
+                            {Startup.PolicyKey, Startup.SignUpPolicyId}
+                        })
+                    {
+                        RedirectUri = "/",
+                    }, OpenIdConnectAuthenticationDefaults.AuthenticationType);
+            }
+        }
+
+
+        public void Profile()
+        {
+            if (Request.IsAuthenticated)
+            {
+                HttpContext.GetOwinContext().Authentication.Challenge(
+                    new AuthenticationProperties(
+                        new Dictionary<string, string>
+                        {
+                            {Startup.PolicyKey, Startup.ProfilePolicyId}
+                        })
+                    {
+                        RedirectUri = "/",
+                    }, OpenIdConnectAuthenticationDefaults.AuthenticationType);
+            }
+        }
+
+        public void SignOut()
+        {
+            // To sign out the user, you should issue an OpenIDConnect sign out request using the last policy that the user executed.
+            // This is as easy as looking up the current value of the ACR claim, adding it to the AuthenticationProperties, and making an OWIN SignOut call.
+
+            HttpContext.GetOwinContext().Authentication.SignOut(
+                new AuthenticationProperties(
+                    new Dictionary<string, string>
+                    {
+                        {Startup.PolicyKey, ClaimsPrincipal.Current.FindFirst(Startup.AcrClaimType).Value}
+                    }), OpenIdConnectAuthenticationDefaults.AuthenticationType, CookieAuthenticationDefaults.AuthenticationType);
+        }
+
+        public ActionResult Preferences()
+        {
+            Claim displayName = ClaimsPrincipal.Current.FindFirst(ClaimsPrincipal.Current.Identities.First().NameClaimType);
+            Claim objectID = ClaimsPrincipal.Current.FindFirst(Startup.ObjectIdClaimType);
+
+            ViewBag.DisplayName = displayName != null ? displayName.Value : string.Empty;
+
+            if (Request.IsAuthenticated)
+            {
+                user_preference user = db.User_Preference.Find(objectID.Value.ToString());
+
+                if (user == null)
+                {
+                    user_preference userNew = new user_preference();
+                    userNew.UserId = objectID.Value.ToString();
+                    userNew.Preferences = null;
+                    db.User_Preference.Add(userNew);
+                    db.SaveChanges();
+                    return View(userNew);
+                }
+                return View(user);
+            }
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Preferences(
+            [Bind(Include = "UserId,Preferences")] user_preference user_preference)
+        {
+            Claim displayName = ClaimsPrincipal.Current.FindFirst(ClaimsPrincipal.Current.Identities.First().NameClaimType);
+            ViewBag.DisplayName = displayName != null ? displayName.Value : string.Empty;
+
+            if (ModelState.IsValid)
+            {
+                db.Entry(user_preference).State = EntityState.Modified;
+                await db.SaveChangesAsync();
+                return View();
+            }
+            return View(user_preference);
+        }
+
         #endregion
     }
 }
